@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
 )
@@ -29,14 +30,14 @@ var publishCmd = &cobra.Command{
 	Use:     "publish",
 	Short:   "Publish to Cloud Pub/Sub",
 	Long:    "Publish to Cloud Pub/Sub",
-	Example: "pubsub publish --project=project --topic=topic --message=message",
+	Example: fmt.Sprintln(" ", rootCmd.Use, "publish", "--project=project --topic=topic --message=message"),
 	Run: func(cmd *cobra.Command, args []string) {
 		topicID, _ := cmd.Flags().GetString("topic")
 		message, _ := cmd.Flags().GetString("message")
 		filePath, _ := cmd.Flags().GetString("file")
 		number, _ := cmd.Flags().GetInt("number")
 
-		if config.ProjectID == "" {
+		if viper.GetString("ProjectID") == "" {
 			fmt.Printf("required ProjectID\n")
 			os.Exit(1)
 			return
@@ -64,7 +65,7 @@ var publishCmd = &cobra.Command{
 		}
 
 		ctx := context.Background()
-		client, err := pubsub.NewClient(ctx, config.ProjectID)
+		client, err := pubsub.NewClient(ctx, viper.GetString("ProjectID"))
 		if err != nil {
 			fmt.Printf("pubsub.NewClient: %v\n", err)
 			os.Exit(1)

@@ -25,9 +25,10 @@ import (
 
 // createConfigCmd represents the createConfig command
 var createConfigCmd = &cobra.Command{
-	Use:   "createConfig",
-	Short: "Write config file",
-	Long:  "Write config file",
+	Use:     "createConfig",
+	Short:   "Write config file",
+	Long:    "Write config file",
+	Example: fmt.Sprintln(" ", rootCmd.Use, "createConfig", "--project=project"),
 	Run: func(cmd *cobra.Command, args []string) {
 		if err := viper.SafeWriteConfig(); err != nil {
 			fmt.Println(err)

@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"os"
 	"sync/atomic"
 	"time"
@@ -27,9 +28,10 @@ import (
 
 // pullCmd represents the pull command
 var pullCmd = &cobra.Command{
-	Use:   "pull",
-	Short: "pull subscription message",
-	Long:  "pull subscription message",
+	Use:     "pull",
+	Short:   "pull subscription message",
+	Long:    "pull subscription message",
+	Example: fmt.Sprintln(" ", rootCmd.Use, "pull", "--project=project --sub=sub"),
 	Run: func(cmd *cobra.Command, args []string) {
 		subID, _ := cmd.Flags().GetString("sub")
 		timeout, _ := cmd.Flags().GetInt("timeout")
@@ -37,7 +39,7 @@ var pullCmd = &cobra.Command{
 		maxOutstandingMessages, _ := cmd.Flags().GetInt("MaxOutstandingMessages")
 		number, _ := cmd.Flags().GetInt("number")
 
-		if config.ProjectID == "" {
+		if viper.GetString("ProjectID") == "" {
 			fmt.Printf("required ProjectID\n")
 			os.Exit(1)
 			return
@@ -53,7 +55,7 @@ var pullCmd = &cobra.Command{
 		var cancel context.CancelFunc
 
 		ctx = context.Background()
-		client, err := pubsub.NewClient(ctx, config.ProjectID)
+		client, err := pubsub.NewClient(ctx, viper.GetString("ProjectID"))
 		if err != nil {
 			fmt.Printf("pubsub.NewClient: %v\n", err)
 			os.Exit(1)
